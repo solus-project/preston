@@ -20,30 +20,38 @@
 package libpreston
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // TreeFunc is a simple callback type which takes a full path as a string to
 // check and read.
-type TreeFunc func(path string) error
+type TreeFunc func(path string)
 
 // TreeScanner is used to scan a source tree and do useful Things with said tree.
 // Predominantly this is used for scanning and discovering licenses within the tree.
 type TreeScanner struct {
-	BaseDir      string   // Base directory to actually scan
+	BaseDir      string // Base directory to actually scan
+	callbacks    map[string]TreeFunc
 	ignoredPaths []string // List of paths to always ignore
 }
 
 // NewTreeScanner will return a scanner for the given directory
 func NewTreeScanner(basedir string) *TreeScanner {
 	return &TreeScanner{
-		BaseDir: basedir,
+		BaseDir:   basedir,
+		callbacks: make(map[string]TreeFunc),
 		ignoredPaths: []string{
 			".git*", // Really no sense digging inside these
 		},
 	}
+}
+
+// AddCallback will register a callback for the given pattern. Note that
+// all callbacks are lower-case.
+func (t *TreeScanner) AddCallback(pattern string, callback TreeFunc) {
+	t.callbacks[strings.ToLower(pattern)] = callback
 }
 
 // Scan will do the grunt work of actually _scanning_ the tree
@@ -53,13 +61,22 @@ func (t *TreeScanner) Scan() error {
 
 // isIgnored will check if the basenamed file matches an ignored pattern
 func (t *TreeScanner) isIgnored(path string) bool {
-	base := filepath.Base(path)
+	base := strings.ToLower(filepath.Base(path))
 	for _, p := range t.ignoredPaths {
 		if b, _ := filepath.Match(p, base); b {
 			return true
 		}
 	}
 	return false
+}
+
+func (t *TreeScanner) fireCallbacks(path string) {
+	base := strings.ToLower(filepath.Base(path))
+	for pattern, callback := range t.callbacks {
+		if b, _ := filepath.Match(pattern, base); b {
+			callback(path)
+		}
+	}
 }
 
 // walker handles each item in the tree-walk, skipping "special" paths
@@ -76,6 +93,6 @@ func (t *TreeScanner) walker(path string, info os.FileInfo, err error) error {
 	if info.IsDir() {
 		return nil
 	}
-	fmt.Fprintf(os.Stderr, "Path: %v\n", path)
+	t.fireCallbacks(path)
 	return nil
 }

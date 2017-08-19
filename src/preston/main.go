@@ -36,6 +36,21 @@ func scanOne(path string) {
 
 func scanDir(path string) {
 	scanner := libpreston.NewTreeScanner(path)
+
+	license := func(path string) {
+		fmt.Printf("License file: %s\n", path)
+	}
+
+	// Known license file names
+	licenses := []string{
+		"license*",
+		"licence*",
+		"copying*",
+	}
+
+	for _, l := range licenses {
+		scanner.AddCallback(l, license)
+	}
 	scanner.Scan()
 }
 
