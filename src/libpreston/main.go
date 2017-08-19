@@ -18,3 +18,28 @@
 // and is the main entry point into all functionality. It provides various scanners
 // and methods to verify the conformance of a given package.
 package libpreston
+
+// TreeFunc is a simple callback type which takes a full path as a string to
+// check and read.
+type TreeFunc func(path string) error
+
+// TreeScanner is used to scan a source tree and do useful Things with said tree.
+// Predominantly this is used for scanning and discovering licenses within the tree.
+type TreeScanner struct {
+	BaseDir      string   // Base directory to actually scan
+	ignoredPaths []string // List of paths to always ignore
+}
+
+// NewTreeScanner will return a scanner for the given directory
+func NewTreeScanner(basedir string) *TreeScanner {
+	return &TreeScanner{
+		BaseDir: basedir,
+		ignoredPaths: []string{
+			".git", // Really no sense digging inside these
+		},
+	}
+}
+
+// Scan will do the grunt work of actually _scanning_ the tree
+func (t *TreeScanner) Scan() {
+}

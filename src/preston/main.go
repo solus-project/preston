@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"libpreston"
 	"libpreston/source"
 	"os"
 	"strings"
@@ -33,7 +34,13 @@ func scanOne(path string) {
 	fmt.Printf("License(s): %s\n", strings.Join(spkg.License, ", "))
 }
 
+func scanDir(path string) {
+	scanner := libpreston.NewTreeScanner(path)
+	scanner.Scan()
+}
+
 func main() {
 	scanOne("src/libpreston/source/testdata/package.yml")
 	scanOne("src/libpreston/source/testdata/pspec.xml")
+	scanDir(".")
 }
