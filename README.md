@@ -1,5 +1,7 @@
 Preston
-=======
+-------
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Conformance pipeline for Solus packages per [T4332](https://dev.solus-project.com/T4332)
 
@@ -18,3 +20,10 @@ The Name
     [15:08:21] <ikey> preston it is
     [15:08:25] <JoshStrobl> xD
     [15:08:28] <ikey> im not spending that much time coming up with a name
+
+License
+-------
+
+Copyright © 2017 Solus Project
+
+`preston` is available under the terms of the Apache-2.0 license
