@@ -19,6 +19,12 @@
 // and methods to verify the conformance of a given package.
 package libpreston
 
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+)
+
 // TreeFunc is a simple callback type which takes a full path as a string to
 // check and read.
 type TreeFunc func(path string) error
@@ -41,5 +47,35 @@ func NewTreeScanner(basedir string) *TreeScanner {
 }
 
 // Scan will do the grunt work of actually _scanning_ the tree
-func (t *TreeScanner) Scan() {
+func (t *TreeScanner) Scan() error {
+	return filepath.Walk(t.BaseDir, t.walker)
+}
+
+// isIgnored is currently stupidly simple, but will eventually support
+// patterns.
+func (t *TreeScanner) isIgnored(path string) bool {
+	for _, p := range t.ignoredPaths {
+		if path == p {
+			return true
+		}
+	}
+	return false
+}
+
+// walker handles each item in the tree-walk, skipping "special" paths
+func (t *TreeScanner) walker(path string, info os.FileInfo, err error) error {
+	if info == nil {
+		return nil
+	}
+	if t.isIgnored(path) {
+		if info.IsDir() {
+			return filepath.SkipDir
+		}
+		return nil
+	}
+	if info.IsDir() {
+		return nil
+	}
+	fmt.Fprintf(os.Stderr, "Path: %v\n", path)
+	return nil
 }
