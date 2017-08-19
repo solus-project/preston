@@ -23,7 +23,7 @@ import (
 )
 
 func main() {
-	spkg, err := source.NewPackage("tdata/package.yml")
+	spkg, err := source.NewPackage("src/libpreston/source/testdata/package.yml")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error parsing package: %s\n", err)
 		os.Exit(1)
