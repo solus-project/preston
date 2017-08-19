@@ -41,9 +41,9 @@ func NewPackage(path string) (*Package, error) {
 	base := filepath.Base(path)
 	switch base {
 	case "package.yml":
-		return NewEopkgPackage(base)
+		return NewEopkgPackage(path)
 	case "pspec.xml":
-		return NewEopkgPackageLegacy(base)
+		return NewEopkgPackageLegacy(path)
 	// Potential: Add .spec, snapcraft, etc, if people are needing it
 	default:
 		return nil, fmt.Errorf("unknown package type: %v", path)
