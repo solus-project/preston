@@ -16,7 +16,41 @@
 
 package source
 
+import (
+	"github.com/go-yaml/yaml"
+	"io/ioutil"
+)
+
+// ypkgParser deals with the peculiarities of the ypkg format.
+// While it is YAML, it makes some stylistic loose choices to permit
+// one or more methods for expressing the same thing, such as having
+// a single string value where a list of strings is expected
+type ypkgParser struct {
+	indexedMap map[interface{}]interface{}
+}
+
+// newYpkgParser returns a new parser which will attempt to load the YAML
+// file into an indexed map
+func newYpkgParser(path string) (*ypkgParser, error) {
+	blob, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	ret := &ypkgParser{
+		indexedMap: make(map[interface{}]interface{}),
+	}
+	if err = yaml.Unmarshal([]byte(blob), &ret.indexedMap); err != nil {
+		return nil, err
+	}
+	return ret, nil
+}
+
 // NewEopkgPackage will return a YPKG parsed source.Package
 func NewEopkgPackage(path string) (*Package, error) {
+	_, err := newYpkgParser(path)
+	if err != nil {
+		return nil, err
+	}
+
 	return nil, ErrNotYetImplemented
 }
