@@ -18,20 +18,3 @@
 // and is the main entry point into all functionality. It provides various scanners
 // and methods to verify the conformance of a given package.
 package libpreston
-
-import (
-	"errors"
-)
-
-// A SourcePackage provides the basic parsing functionality to examine a package
-// and determine licenses, metadata, etc.
-type SourcePackage struct {
-	Name    string   // Name of the package source
-	License []string // Licenses from the source spec
-}
-
-// NewSourcePackage will return an appropriate source package for the given
-// path, and attempt to parse.
-func NewSourcePackage(path string) (*SourcePackage, error) {
-	return nil, errors.New("Not yet implemented")
-}

@@ -14,19 +14,9 @@
 // limitations under the License.
 //
 
-package main
+package source
 
-import (
-	"fmt"
-	"libpreston/source"
-	"os"
-)
-
-func main() {
-	spkg, err := source.NewPackage("tdata/package.yml")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing package: %s\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("Got source package: %v\n", spkg.Name)
+// NewEopkgPackageLegacy will return a PSPEC parsed source.Package
+func NewEopkgPackageLegacy(path string) (*Package, error) {
+	return nil, ErrNotYetImplemented
 }
