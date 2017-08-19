@@ -23,12 +23,17 @@ import (
 	"strings"
 )
 
-func main() {
-	spkg, err := source.NewPackage("src/libpreston/source/testdata/package.yml")
+func scanOne(path string) {
+	spkg, err := source.NewPackage(path)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error parsing package: %s\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("Got source package: %v\n", spkg.Name)
 	fmt.Printf("License(s): %s\n", strings.Join(spkg.License, ", "))
+}
+
+func main() {
+	scanOne("src/libpreston/source/testdata/package.yml")
+	scanOne("src/libpreston/source/testdata/pspec.xml")
 }
