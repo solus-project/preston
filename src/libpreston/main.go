@@ -41,7 +41,7 @@ func NewTreeScanner(basedir string) *TreeScanner {
 	return &TreeScanner{
 		BaseDir: basedir,
 		ignoredPaths: []string{
-			".git", // Really no sense digging inside these
+			".git*", // Really no sense digging inside these
 		},
 	}
 }
@@ -51,11 +51,11 @@ func (t *TreeScanner) Scan() error {
 	return filepath.Walk(t.BaseDir, t.walker)
 }
 
-// isIgnored is currently stupidly simple, but will eventually support
-// patterns.
+// isIgnored will check if the basenamed file matches an ignored pattern
 func (t *TreeScanner) isIgnored(path string) bool {
+	base := filepath.Base(path)
 	for _, p := range t.ignoredPaths {
-		if path == p {
+		if b, _ := filepath.Match(p, base); b {
 			return true
 		}
 	}
