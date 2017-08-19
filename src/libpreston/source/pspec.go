@@ -16,6 +16,11 @@
 
 package source
 
+import (
+	"encoding/xml"
+	"os"
+)
+
 // pspecPackage is the simplest possible representation of a pspec.xml package
 // whilst providing access to the things we care about: licenses and name
 type pspecPackage struct {
@@ -27,5 +32,18 @@ type pspecPackage struct {
 
 // NewEopkgPackageLegacy will return a PSPEC parsed source.Package
 func NewEopkgPackageLegacy(path string) (*Package, error) {
-	return nil, ErrNotYetImplemented
+	var spec pspecPackage
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	dec := xml.NewDecoder(f)
+	if err = dec.Decode(&spec); err != nil {
+		return nil, err
+	}
+	return &Package{
+		Name:    spec.Source.Name,
+		License: spec.Source.License,
+	}, nil
 }
