@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"libpreston/source"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -29,4 +30,5 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("Got source package: %v\n", spkg.Name)
+	fmt.Printf("License(s): %s\n", strings.Join(spkg.License, ", "))
 }
