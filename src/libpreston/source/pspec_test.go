@@ -16,16 +16,26 @@
 
 package source
 
-// pspecPackage is the simplest possible representation of a pspec.xml package
-// whilst providing access to the things we care about: licenses and name
-type pspecPackage struct {
-	Source struct {
-		Name    string
-		License []string
-	}
-}
+import (
+	"testing"
+)
 
-// NewEopkgPackageLegacy will return a PSPEC parsed source.Package
-func NewEopkgPackageLegacy(path string) (*Package, error) {
-	return nil, ErrNotYetImplemented
+var (
+	pspecTestFile = "testdata/pspec.xml"
+)
+
+func TestPspecParser(t *testing.T) {
+	spkg, err := NewEopkgPackageLegacy(pspecTestFile)
+	if err != nil {
+		t.Fatalf("Failed to parse known file: %v", err)
+	}
+	if spkg.Name != "os-prober" {
+		t.Fatalf("Expected 'os-prober', got '%s'", spkg.Name)
+	}
+	if len(spkg.License) != 1 {
+		t.Fatalf("Invalid number of licenses")
+	}
+	if spkg.License[0] != "GPL-2.0" {
+		t.Fatalf("Expected 'GPL-2.0', got '%s'", spkg.License[0])
+	}
 }
