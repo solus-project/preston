@@ -18,10 +18,15 @@ package main
 
 import (
 	"fmt"
+	"libpreston"
 	"os"
 )
 
 func main() {
-	fmt.Fprintf(os.Stderr, "Not yet implemented\n")
-	os.Exit(1)
+	spkg, err := libpreston.NewSourcePackage("tdata/package.yml")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error parsing package: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Got source package: %v\n", spkg.Name)
 }
