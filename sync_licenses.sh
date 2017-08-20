@@ -5,15 +5,13 @@ fail_exit(){
     exit 1
 }
 
-git clone https://github.com/spdx/license-list.git --depth=1 || fail_exit "Failed to clone"
+git clone https://github.com/spdx/license-list-data.git --depth=1 || fail_exit "Failed to clone"
 
 if [[ -e "licenses.spdx" ]]; then
     rm -v licenses.spdx
 fi
 
-pushd license-list
-
-rm "Updating the SPDX Licenses.txt" -v
+pushd license-list-data/text
 
 for i in *.txt ; do
         # Strip all whitespace from it due to many licenses being reflowed
@@ -22,7 +20,7 @@ for i in *.txt ; do
         mv $i.tmp $i
         sum=`sha256sum "${i}"|cut -f 1 -d ' '`
         nom=`echo "$i" | sed 's@\.txt$@@'`
-        echo -e "${sum}\t${nom}" >> ../licenses.spdx
+        echo -e "${sum}\t${nom}" >> ../../licenses.spdx
 done
 popd
-rm -rf license-list
+rm -rf license-list-data
