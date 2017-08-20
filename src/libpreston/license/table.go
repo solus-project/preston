@@ -53,6 +53,7 @@ func (a *Accumulator) initTable() {
 	a.insertTable("(CDDL)Version1.0", "CDDL-1.0")
 	a.insertTable("(CDDL)Version1.1", "CDDL-1.1")
 	a.insertTable("GNUGENERALPUBLICLICENSEVersion1", "GPL-1.0")
+	a.insertTable("GNUGENERALPUBLICLICENSEVersion2", "GPL-2.0")
 	a.insertTable("GNUGENERALPUBLICLICENSEVersion3", "GPL-3.0")
 	a.insertTable("GNULIBRARYGENERALPUBLICLICENSEVersion2", "LGPL-2.0")
 	a.insertTable("GNULESSERGENERALPUBLICLICENSEVersion2.1", "LGPL-2.1")
