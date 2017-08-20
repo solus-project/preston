@@ -64,6 +64,7 @@ func NewTreeScanner(basedir string) (*TreeScanner, error) {
 		"license*",
 		"licence*",
 		"copying*",
+		"*.txt",
 	}
 
 	// Set up plain license files

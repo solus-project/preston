@@ -42,6 +42,7 @@ func (a *Accumulator) getCondensed(path string) (string, error) {
 		text = strings.Replace(text, "\r", "", -1)
 		text = strings.Replace(text, "\t", "", -1)
 		text = strings.Replace(text, "\f", "", -1)
+		text = strings.Replace(text, "=", "", -1)
 		text = strings.Replace(text, " ", "", -1)
 
 		// Say no to empty lines
