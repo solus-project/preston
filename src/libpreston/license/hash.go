@@ -20,6 +20,7 @@ import (
 	"bufio"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -61,5 +62,16 @@ func (a *Accumulator) getHash(lines *[]string) (string, error) {
 	if _, err := io.Copy(hash, sr); err != nil {
 		return "", err
 	}
+	fmt.Printf("%s\n", joinedBlob)
 	return hex.EncodeToString([]byte(hash.Sum(nil))), nil
+}
+
+// pushHash will attemot to push the license for the hash if it finds a SPDX
+// record match
+func (a *Accumulator) pushHash(hexhash string) bool {
+	if spdx, ok := a.hashes[hexhash]; ok {
+		a.pushLicenseFinal(spdx)
+		return true
+	}
+	return false
 }

@@ -114,5 +114,22 @@ func (a *Accumulator) pushLicense(nameOrig string) {
 // ProcessPlainLicense will handle LICENSE/LICENCE/COPYING files and determine
 // the applicable license automatically.
 func (a *Accumulator) ProcessPlainLicense(path string) {
-	fmt.Printf("License file: %s\n", path)
+	lines, err := a.getCondensed(path)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get lines for %s: %v\n", path, err)
+		return
+	}
+	hash, err := a.getHash(&lines)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get hash for %s: %v\n", path, err)
+		return
+	}
+
+	if a.pushHash(hash) {
+		fmt.Printf("Got hash match!\n")
+		return
+	}
+
+	fmt.Printf("License file: %s %s\n", path, hash)
+
 }
