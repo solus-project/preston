@@ -30,6 +30,7 @@ type Accumulator struct {
 	hashes     map[string]string // Simple hash comparisons
 	spdx       map[string]int    // SPDX Ids
 	lomap      map[string]string // lower to real SPDX name
+	matchTable map[string]string // allow license text matching
 }
 
 // NewAccumulator will return a new Accumulator ready for processing.
@@ -40,6 +41,7 @@ func NewAccumulator() (*Accumulator, error) {
 		hashes:     make(map[string]string),
 		spdx:       make(map[string]int),
 		lomap:      make(map[string]string),
+		matchTable: make(map[string]string),
 	}
 	if err := accum.loadAssets(); err != nil {
 		return nil, err
