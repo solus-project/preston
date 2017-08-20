@@ -111,7 +111,7 @@ func (t *TreeScanner) walker(path string, info os.FileInfo, err error) error {
 		}
 		return nil
 	}
-	if info.IsDir() {
+	if !info.Mode().IsRegular() {
 		return nil
 	}
 	t.fireCallbacks(path)
