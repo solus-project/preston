@@ -123,7 +123,8 @@ func (a *Accumulator) ProcessPlainLicense(path string) {
 		fmt.Fprintf(os.Stderr, "Failed to get lines for %s: %v\n", path, err)
 		return
 	}
-	hash, err := a.getHash(lines)
+	line := strings.Join(lines, "")
+	hash, err := a.getHash(line)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get hash for %s: %v\n", path, err)
 		return
@@ -136,8 +137,13 @@ func (a *Accumulator) ProcessPlainLicense(path string) {
 		return
 	}
 
-	if a.pushTable(strings.ToLower(lines)) {
+	if a.pushTable(strings.ToLower(line)) {
 		fmt.Printf("Got table match!\n")
+		return
+	}
+
+	if a.pushBSD(lines) {
+		fmt.Printf("Got BSD match!\n")
 		return
 	}
 }

@@ -17,6 +17,7 @@
 package license
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -81,6 +82,92 @@ func (a *Accumulator) initTable() {
 	a.insertTable("apply to any software that links to the", "MIT-advertising")
 	a.insertTable("publicly.ThisincludesacknowledgmentsineitherCopyrightnotices", "MIT-enna")
 	a.insertTable("copiesoftheSoftwareanditsdocumentationandacknowledgment", "MIT-feh")
+
+	// BSD
+	a.insertTable("TheClearBSDLicense", "BSD-3-Clause-Clear")
+	a.insertTable("BSDProtectionLicense", "BSD-Protection")
+}
+
+// pushBSD attempts to find a BSD license in the input text, after pushTable
+// may already have failed
+func (a *Accumulator) pushBSD(lines []string) bool {
+	isNumberLine := func(l string, n int) bool {
+		if strings.HasPrefix(l, "*") {
+			return true
+		}
+		if strings.HasPrefix(l, fmt.Sprintf("%d.", n)) {
+			return true
+		}
+		if strings.HasPrefix(l, fmt.Sprintf("%d)", n)) {
+			return true
+		}
+		return false
+	}
+
+	nClause := 0
+	blob := strings.Join(lines, "")
+
+	if !strings.Contains(blob, "Redistributionanduseinsourceandbinaryforms,withorwithoutmodification") {
+		return false
+	}
+
+	if !strings.Contains(blob, "THISSOFTWAREISPROVIDED") {
+		return false
+	}
+
+	for _, l := range lines {
+		if isNumberLine(l, 1) && nClause == 0 && strings.Contains(l, "Redistributions") {
+			nClause = 1
+		} else if isNumberLine(l, 2) && nClause == 1 && strings.Contains(l, "Redistributions") {
+			nClause = 2
+		} else if isNumberLine(l, 3) && nClause == 2 {
+			if strings.Contains(l, "All advertising") || strings.Contains(l, "Neither") {
+				nClause = 3
+			}
+		} else if isNumberLine(l, 4) && nClause == 3 && strings.Contains(l, "Neither") {
+			nClause = 4
+		}
+	}
+
+	switch nClause {
+	case 2:
+		if strings.Contains(blob, "TheFreeBSDProject") {
+			a.pushLicenseFinal("BSD-2-Clause-FreeBSD")
+		} else if strings.Contains(blob, "NetBSDFoundation") {
+			a.pushLicenseFinal("BSD-2-Clause-NetBSD")
+		} else if strings.Contains(blob, "Deusty") {
+			a.pushLicenseFinal("BSD-Source-Code")
+		} else {
+			a.pushLicenseFinal("BSD-2-Clause")
+		}
+	case 3:
+		if strings.Contains(blob, "nuclearfacility") {
+			if strings.Contains(blob, "designed,licensedorintended") {
+				if strings.Contains(blob, "SunMicrosystems") {
+					a.pushLicenseFinal("BSD-3-Clause-No-Nuclear-License")
+				} else {
+					a.pushLicenseFinal("BSD-3-Clause-No-Nuclear-License-2014")
+				}
+			} else {
+				a.pushLicenseFinal("BSD-3-Clause-No-Nuclear-Warranty")
+			}
+		} else if strings.Contains(blob, "LawrenceBerkeleyNationalLaboratory") {
+			a.pushLicenseFinal("BSD-3-Clause-LBNL")
+		} else {
+			a.pushLicenseFinal("BSD-3-Clause")
+		}
+	case 4:
+		if strings.Contains(blob, "UniversityofCalifornia") {
+			a.pushLicenseFinal("BSD-4-Clause-UC")
+		} else if strings.Contains(blob, "mustretainthefollowingacknowledgment") {
+			a.pushLicenseFinal("BSD-3-Clause-Attribution")
+		} else {
+			a.pushLicenseFinal("BSD-4-Clause")
+		}
+	default:
+		return false
+	}
+	return true
 }
 
 // pushTable tries to match the key parts of text input to headers in the table
