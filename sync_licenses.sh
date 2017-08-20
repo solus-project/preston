@@ -17,8 +17,9 @@ rm "Updating the SPDX Licenses.txt" -v
 
 for i in *.txt ; do
         # Strip all whitespace from it due to many licenses being reflowed
-        # Removes blank lines, all tabs, and all spaces
-        sed -e 's/[\t ]//g;/^$/d' -i $i
+        # Removes all newlines and whitespace
+        tr -d '\t\n\r ' < $i > $i.tmp
+        mv $i.tmp $i
         sum=`sha256sum "${i}"|cut -f 1 -d ' '`
         nom=`echo "$i" | sed 's@\.txt$@@'`
         echo -e "${sum}\t${nom}" >> ../licenses.spdx
