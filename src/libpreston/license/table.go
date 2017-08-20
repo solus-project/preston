@@ -60,7 +60,6 @@ func (a *Accumulator) initTable() {
 	a.insertTable("GNULESSERGENERALPUBLICLICENSEVersion3", "LGPL-3.0")
 	a.insertTable("libpngnoticesisprovidedforyourconvenience", "Libpng")
 	a.insertTable("thatisbuiltusingGNULibtool,youmayincludethisfile", "Libtool-exception")
-	a.insertTable("MITLicense", "MIT")
 	a.insertTable("MOZILLAPUBLICLICENSEVersion1.0", "MPL-1.0")
 	a.insertTable("MozillaPublicLicenseVersion1.1", "MPL-1.1")
 	a.insertTable("OpenSSLLicense", "OpenSSL")
@@ -73,6 +72,15 @@ func (a *Accumulator) initTable() {
 	a.insertTable("Version1.0.5of10December2007", "bzip2-1.0.5")
 	a.insertTable("libbzip2version1.0.6of6September2010", "bzip2-1.0.6")
 	a.insertTable("SAMLEFFLERORSILICONGRAPHICS", "libtiff")
+	a.insertTable("Imlib2License", "Imlib2")
+
+	// MIT License(s)
+	a.insertTable("MITLicense", "MIT")
+	a.insertTable("CMUANDTHEREGENTSOFTHEUNIVERSITYOFCALIFORNIA", "MIT-CMU")
+	a.insertTable("Software,itsdocumentationandmarketing&publicitymaterials", "MIT-advertising")
+	a.insertTable("apply to any software that links to the", "MIT-advertising")
+	a.insertTable("publicly.ThisincludesacknowledgmentsineitherCopyrightnotices", "MIT-enna")
+	a.insertTable("copiesoftheSoftwareanditsdocumentationandacknowledgment", "MIT-feh")
 }
 
 // pushTable tries to match the key parts of text input to headers in the table
