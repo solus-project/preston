@@ -20,7 +20,6 @@ import (
 	"bufio"
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -42,6 +41,7 @@ func (a *Accumulator) getCondensed(path string) ([]string, error) {
 		text = strings.Replace(text, "\n", "", -1)
 		text = strings.Replace(text, "\r", "", -1)
 		text = strings.Replace(text, "\t", "", -1)
+		text = strings.Replace(text, "\f", "", -1)
 		text = strings.Replace(text, " ", "", -1)
 
 		// Say no to empty lines
@@ -56,13 +56,12 @@ func (a *Accumulator) getCondensed(path string) ([]string, error) {
 
 // getHash will return the appropriate hash for the given set of lines
 func (a *Accumulator) getHash(lines *[]string) (string, error) {
-	joinedBlob := strings.Join(*lines, "\n")
+	joinedBlob := strings.Join(*lines, "")
 	sr := strings.NewReader(joinedBlob)
 	hash := sha256.New()
 	if _, err := io.Copy(hash, sr); err != nil {
 		return "", err
 	}
-	fmt.Printf("%s\n", joinedBlob)
 	return hex.EncodeToString([]byte(hash.Sum(nil))), nil
 }
 
