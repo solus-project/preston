@@ -3,7 +3,7 @@ Preston
 
 [![Report](https://goreportcard.com/badge/github.com/solus-project/preston)](https://goreportcard.com/report/github.com/solus-project/preston) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Conformance pipeline for Solus packages per [T4332](https://dev.solus-project.com/T4332)
+Conformance pipeline for Linux distribution packages per [T4332](https://dev.solus-project.com/T4332)
 
 
 The Name
