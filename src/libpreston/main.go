@@ -46,6 +46,8 @@ func NewTreeScanner(basedir string) *TreeScanner {
 		callbacks: make(map[string]TreeFunc),
 		ignoredPaths: []string{
 			".git*", // Really no sense digging inside these
+			"*.a",
+			"*.so*",
 		},
 	}
 
