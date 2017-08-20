@@ -27,11 +27,11 @@ import (
 
 // getCondensed will convert the file into an array of strings with empties
 // and whitespace removed
-func (a *Accumulator) getCondensed(path string) ([]string, error) {
+func (a *Accumulator) getCondensed(path string) (string, error) {
 	var ret []string
 	i, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer i.Close()
 	sc := bufio.NewScanner(i)
@@ -51,12 +51,11 @@ func (a *Accumulator) getCondensed(path string) ([]string, error) {
 		// Pop it back without a newline (slice is implicit \n join)
 		ret = append(ret, text)
 	}
-	return ret, nil
+	return strings.Join(ret, ""), nil
 }
 
 // getHash will return the appropriate hash for the given set of lines
-func (a *Accumulator) getHash(lines *[]string) (string, error) {
-	joinedBlob := strings.Join(*lines, "")
+func (a *Accumulator) getHash(joinedBlob string) (string, error) {
 	sr := strings.NewReader(joinedBlob)
 	hash := sha256.New()
 	if _, err := io.Copy(hash, sr); err != nil {

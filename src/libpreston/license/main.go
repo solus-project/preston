@@ -70,11 +70,13 @@ func (a *Accumulator) loadAssets() error {
 		a.hashes[hash] = nom
 		a.lomap[strings.ToLower(nom)] = nom
 	}
+	a.initTable()
 	return nil
 }
 
 // pushLicenseFinal will push the license hit into the table without transforms
 func (a *Accumulator) pushLicenseFinal(name string) {
+	fmt.Printf(" -> %s\n", name)
 	a.hits[a.lomap[name]] = 1
 }
 
@@ -121,17 +123,21 @@ func (a *Accumulator) ProcessPlainLicense(path string) {
 		fmt.Fprintf(os.Stderr, "Failed to get lines for %s: %v\n", path, err)
 		return
 	}
-	hash, err := a.getHash(&lines)
+	hash, err := a.getHash(lines)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get hash for %s: %v\n", path, err)
 		return
 	}
+
+	fmt.Printf("License file: %s %s\n", path, hash)
 
 	if a.pushHash(hash) {
 		fmt.Printf("Got hash match!\n")
 		return
 	}
 
-	fmt.Printf("License file: %s %s\n", path, hash)
-
+	if a.pushTable(strings.ToLower(lines)) {
+		fmt.Printf("Got table match!\n")
+		return
+	}
 }

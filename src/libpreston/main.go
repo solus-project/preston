@@ -49,6 +49,7 @@ func NewTreeScanner(basedir string) (*TreeScanner, error) {
 			".git*", // Really no sense digging inside these
 			"*.a",
 			"*.so*",
+			"*.spdx", // in tree testing
 		},
 	}
 
