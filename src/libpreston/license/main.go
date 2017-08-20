@@ -14,33 +14,24 @@
 // limitations under the License.
 //
 
-package main
+package license
 
 import (
 	"fmt"
-	"libpreston"
-	"libpreston/source"
-	"os"
-	"strings"
 )
 
-func scanOne(path string) {
-	spkg, err := source.NewPackage(path)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing package: %s\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("Got source package: %v\n", spkg.Name)
-	fmt.Printf("License(s): %s\n", strings.Join(spkg.License, ", "))
+// Accumulator handles all of the potential license files within a repository
+type Accumulator struct {
+	unused int
 }
 
-func scanDir(path string) {
-	scanner := libpreston.NewTreeScanner(path)
-	scanner.Scan()
+// NewAccumulator will return a new Accumulator ready for processing.
+func NewAccumulator() *Accumulator {
+	return &Accumulator{}
 }
 
-func main() {
-	scanOne("src/libpreston/source/testdata/package.yml")
-	scanOne("src/libpreston/source/testdata/pspec.xml")
-	scanDir(".")
+// ProcessPlainLicense will handle LICENSE/LICENCE/COPYING files and determine
+// the applicable license automatically.
+func (a *Accumulator) ProcessPlainLicense(path string) {
+	fmt.Printf("License file: %s\n", path)
 }

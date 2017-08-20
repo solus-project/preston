@@ -20,6 +20,7 @@
 package libpreston
 
 import (
+	"libpreston/license"
 	"os"
 	"path/filepath"
 	"strings"
@@ -34,18 +35,36 @@ type TreeFunc func(path string)
 type TreeScanner struct {
 	BaseDir      string // Base directory to actually scan
 	callbacks    map[string]TreeFunc
-	ignoredPaths []string // List of paths to always ignore
+	ignoredPaths []string             // List of paths to always ignore
+	accum        *license.Accumulator // Detects license patterns
 }
 
 // NewTreeScanner will return a scanner for the given directory
 func NewTreeScanner(basedir string) *TreeScanner {
-	return &TreeScanner{
+	scanner := &TreeScanner{
 		BaseDir:   basedir,
 		callbacks: make(map[string]TreeFunc),
 		ignoredPaths: []string{
 			".git*", // Really no sense digging inside these
 		},
 	}
+
+	// Set up the license Accumulator
+	scanner.accum = license.NewAccumulator()
+
+	// Known license file names
+	licenses := []string{
+		"license*",
+		"licence*",
+		"copying*",
+	}
+
+	// Set up plain license files
+	for _, l := range licenses {
+		scanner.AddCallback(l, scanner.accum.ProcessPlainLicense)
+	}
+
+	return scanner
 }
 
 // AddCallback will register a callback for the given pattern. Note that
