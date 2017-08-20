@@ -40,7 +40,8 @@ type TreeScanner struct {
 }
 
 // NewTreeScanner will return a scanner for the given directory
-func NewTreeScanner(basedir string) *TreeScanner {
+func NewTreeScanner(basedir string) (*TreeScanner, error) {
+	var err error
 	scanner := &TreeScanner{
 		BaseDir:   basedir,
 		callbacks: make(map[string]TreeFunc),
@@ -52,7 +53,10 @@ func NewTreeScanner(basedir string) *TreeScanner {
 	}
 
 	// Set up the license Accumulator
-	scanner.accum = license.NewAccumulator()
+	scanner.accum, err = license.NewAccumulator()
+	if err != nil {
+		return nil, err
+	}
 
 	// Known license file names
 	licenses := []string{
@@ -66,7 +70,7 @@ func NewTreeScanner(basedir string) *TreeScanner {
 		scanner.AddCallback(l, scanner.accum.ProcessPlainLicense)
 	}
 
-	return scanner
+	return scanner, nil
 }
 
 // AddCallback will register a callback for the given pattern. Note that

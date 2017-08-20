@@ -35,7 +35,11 @@ func scanOne(path string) {
 }
 
 func scanDir(path string) {
-	scanner := libpreston.NewTreeScanner(path)
+	scanner, err := libpreston.NewTreeScanner(path)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating scanner: %v\n", err)
+		return
+	}
 	scanner.Scan()
 }
 

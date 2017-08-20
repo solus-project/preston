@@ -17,7 +17,9 @@
 package license
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -25,18 +27,48 @@ import (
 type Accumulator struct {
 	hits       map[string]int
 	transforms map[string]string // Bad name to good name mapping
+	hashes     map[string]string // Simple hash comparisons
 	spdx       map[string]int    // SPDX Ids
 	lomap      map[string]string // lower to real SPDX name
 }
 
 // NewAccumulator will return a new Accumulator ready for processing.
-func NewAccumulator() *Accumulator {
-	return &Accumulator{
+func NewAccumulator() (*Accumulator, error) {
+	accum := &Accumulator{
 		hits:       make(map[string]int),
 		transforms: make(map[string]string),
+		hashes:     make(map[string]string),
 		spdx:       make(map[string]int),
 		lomap:      make(map[string]string),
 	}
+	if err := accum.loadAssets(); err != nil {
+		return nil, err
+	}
+	return accum, nil
+}
+
+// loadAssets will populate the description tables from the main SPDX table
+// file. We'll need to eventually add a better path the SPDX file.
+func (a *Accumulator) loadAssets() error {
+	i, err := os.Open("licenses.spdx")
+	if err != nil {
+		return err
+	}
+	defer i.Close()
+	scanner := bufio.NewScanner(i)
+	for scanner.Scan() {
+		line := scanner.Text()
+		splits := strings.Split(line, "\t")
+		if len(splits) != 2 {
+			return fmt.Errorf("malformed line in licenses.spdx")
+		}
+		hash := splits[0]
+		nom := splits[1]
+		a.spdx[nom] = 1
+		a.hashes[hash] = nom
+		a.lomap[strings.ToLower(nom)] = nom
+	}
+	return nil
 }
 
 // pushLicenseFinal will push the license hit into the table without transforms
